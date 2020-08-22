@@ -6,15 +6,15 @@ using DataValues
 
 export DataTable, NA, isna
 
-struct DataTable{T, TCOLS} <: AbstractVector{T}
+struct DataTable{T,TCOLS} <: AbstractVector{T}
     columns::TCOLS
 end
 
 function fromNT(nt)
-    nt = map(i->i isa ReadOnlyArrays.ReadOnlyArray ? i : ReadOnlyArrays.ReadOnlyArray(i), nt)
+    nt = map(i -> i isa ReadOnlyArrays.ReadOnlyArray ? i : ReadOnlyArrays.ReadOnlyArray(i), nt)
     tx = typeof(nt)
-    et = NamedTuple{propertynames(nt), Tuple{(eltype(fieldtype(tx, i)) for i in 1:fieldcount(typeof(nt)))...}}
-    return DataTable{et, typeof(nt)}(nt)
+    et = NamedTuple{propertynames(nt),Tuple{(eltype(fieldtype(tx, i)) for i in 1:fieldcount(typeof(nt)))...}}
+    return DataTable{et,typeof(nt)}(nt)
 end
 
 swap_dva_in(A) = A
@@ -40,7 +40,7 @@ Base.IndexStyle(::Type{DataTable}) = Base.IndexLinear()
 
 function Base.checkbounds(::Type{Bool}, dt::DataTable, i)
     cols = columns(dt)
-    if length(cols)==0
+    if length(cols) == 0
         return true
     else
         return checkbounds(Bool, cols[1], i)
